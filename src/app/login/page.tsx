@@ -1,35 +1,54 @@
 "use client";
 
-import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { loginSchema, type LoginInput } from "@/lib/validations/auth";
+
 
 export default function LoginPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
+  });
 
-    const form = new FormData(e.currentTarget);
-    const res = await signIn("credentials", {
-      email: form.get("email"),
-      password: form.get("password"),
-      redirect: false,
-    });
+  const loginMutation = useMutation({
+    mutationFn: async (data: LoginInput) => {
+      const res = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
 
-    setLoading(false);
+      if (res?.error) {
+        throw new Error("Invalid email or password");
+      }
 
-    if (res?.error) {
-      toast.error("Invalid email or password");
-    } else {
+      return res;
+    },
+    onSuccess: () => {
       router.push("/dashboard");
-    }
-  }
+      toast.success("Welcome back!");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const onSubmit = (data: LoginInput) => {
+    loginMutation.mutate(data);
+  };
 
   return (
     <div className="flex min-h-screen bg-accent/30 ">
@@ -62,7 +81,7 @@ export default function LoginPage() {
             <p className="mt-1 text-sm text-gray-500">Login to your account</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <label
                 htmlFor="email"
@@ -72,12 +91,14 @@ export default function LoginPage() {
               </label>
               <input
                 id="email"
-                name="email"
                 type="email"
-                required
                 autoComplete="email"
-                className="mt-1 block w-full rounded-lg border bg-white border-gray-300 px-4 py-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary-light/40 focus:outline-none transition"
+                className={`mt-1 block w-full rounded-lg border bg-white px-4 py-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-primary-light/40 focus:outline-none transition ${errors.email
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-300 focus:border-primary"
+                  }`}
                 placeholder="you@example.com"
+                {...register("email")}
               />
             </div>
 
@@ -90,21 +111,23 @@ export default function LoginPage() {
               </label>
               <input
                 id="password"
-                name="password"
                 type="password"
-                required
                 autoComplete="current-password"
-                className="mt-1 block w-full rounded-lg border bg-white border-gray-300 px-4 py-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary-light/40 focus:outline-none transition"
+                className={`mt-1 block w-full rounded-lg border bg-white px-4 py-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-primary-light/40 focus:outline-none transition ${errors.password
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-300 focus:border-primary"
+                  }`}
                 placeholder="••••••••"
+                {...register("password")}
               />
             </div>
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-primary-light active:scale-[0.98] disabled:opacity-60 transition cursor-pointer"
+              disabled={!isValid || loginMutation.isPending}
+              className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-primary-light active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed transition cursor-pointer"
             >
-              {loading ? "Signing in…" : "Sign in"}
+              {loginMutation.isPending ? "Signing in…" : "Sign in"}
             </button>
           </form>
 
