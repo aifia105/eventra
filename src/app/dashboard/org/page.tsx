@@ -1,4 +1,4 @@
-import { auth, signOut } from "@/lib/auth";
+import { auth, signOut } from "@/lib/config/auth";
 import { redirect } from "next/navigation";
 
 export default async function OrgDashboard() {
