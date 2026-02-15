@@ -32,10 +32,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-accent/30 ">
       {/* Left section */}
-      <div className="hidden lg:flex lg:w-1/2 items-center justify-center bg-gradient-to-br from-primary via-primary-light to-primary-lighter relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20" />
+      <div className="hidden lg:flex lg:w-1/2 items-center justify-center rounded-r-2xl  relative overflow-hidden">
+        <div className="absolute inset-0 " />
         <Image
           src="/images/auth.jpg"
           alt="Background"
@@ -44,12 +44,14 @@ export default function LoginPage() {
         />
         <div className="relative z-10 text-center mb-20 text-white px-8">
           <h1 className="text-6xl font-bold">Eventra</h1>
-          <p className="text-2xl opacity-90">Manage your events with ease</p>
+          <p className="text-2xl opacity-90 font-semibold">
+            Start managing events today
+          </p>
         </div>
       </div>
 
       {/* Right section */}
-      <div className="flex w-full lg:w-1/2 rounded-l-2xl relative z-10 shadow-2xl items-center justify-center bg-accent/30 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="flex w-full lg:w-1/2 relative z-10 shadow-2xl items-center justify-center  px-4 py-8 sm:px-6 lg:px-8">
         <div className="w-full max-w-xl space-y-8">
           <div className="lg:hidden text-center">
             <h1 className="text-3xl font-bold text-primary">Eventra</h1>
@@ -57,9 +59,7 @@ export default function LoginPage() {
 
           <div className="flex flex-col items-center justify-center mb-8 text-center">
             <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Login to your account
-            </p>
+            <p className="mt-1 text-sm text-gray-500">Login to your account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -76,7 +76,7 @@ export default function LoginPage() {
                 type="email"
                 required
                 autoComplete="email"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary-light/40 focus:outline-none transition"
+                className="mt-1 block w-full rounded-lg border bg-white border-gray-300 px-4 py-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary-light/40 focus:outline-none transition"
                 placeholder="you@example.com"
               />
             </div>
@@ -94,7 +94,7 @@ export default function LoginPage() {
                 type="password"
                 required
                 autoComplete="current-password"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary-light/40 focus:outline-none transition"
+                className="mt-1 block w-full rounded-lg border bg-white border-gray-300 px-4 py-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary-light/40 focus:outline-none transition"
                 placeholder="••••••••"
               />
             </div>
