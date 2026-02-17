@@ -52,13 +52,13 @@ export default async function ManageEventsPage() {
           <p className="text-gray-500 mb-6 max-w-sm">
             Get started by creating your first event and start selling tickets
           </p>
-          <Link
+          {/* <Link
             href="/dashboard/org/events/new"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-all"
           >
             <Plus className="h-4 w-4" />
             Create Your First Event
-          </Link>
+          </Link> */}
         </div>
       ) : (
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
