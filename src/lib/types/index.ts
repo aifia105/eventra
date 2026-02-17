@@ -26,6 +26,8 @@ export interface Event {
   name: string;
   date: string;
   venue?: string;
+  stageShape?: StageShape;
+  availableSeats: number;
 }
 
 export interface ActivityItem {

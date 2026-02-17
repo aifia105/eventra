@@ -10,6 +10,7 @@ export interface IEvent extends Document {
   availableSeats: number;
   type: EventType;
   stage?: mongoose.Types.ObjectId;
+  stageShape?: string;
 }
 
 const EventSchema = new Schema<IEvent>(
@@ -21,6 +22,10 @@ const EventSchema = new Schema<IEvent>(
     availableSeats: { type: Number, required: true },
     type: { type: String, enum: ["public", "private"], required: true },
     stage: { type: Schema.Types.ObjectId, ref: "Stage" },
+    stageShape: {
+      type: String,
+      enum: ["rectangle", "thrust", "semicircle", "diamond", "amphitheater"],
+    },
   },
   { timestamps: true },
 );

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import SeatGridPreview from "./SeatGridPreview";
 import {
   ArrowLeft,
   Columns3,
@@ -12,15 +11,18 @@ import { LiveLayoutPreview } from "./LiveLayoutPreview";
 import ShapeSelector from "./ShapeSelector";
 import { StageShape } from "@/lib/types";
 import { createSeats, fetchSeats, saveStageShape } from "@/lib/actions/stage";
+import { fetchEvent } from "@/lib/actions/event-single";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
 const StageSetupContent = ({ eventId }: { eventId: string }) => {
-  const [rows, setRows] = useState(5);
-  const [seatsPerRow, setSeatsPerRow] = useState(8);
+  const [rows, setRows] = useState(1);
+  const [seatsPerRow, setSeatsPerRow] = useState(1);
   const [price, setPrice] = useState(25);
   const [stageShape, setStageShape] = useState<StageShape>("rectangle");
+  const [eventLoaded, setEventLoaded] = useState(false);
+  const [maxSeats, setMaxSeats] = useState(0);
 
   const seatsQuery = useQuery({
     queryKey: ["seats", eventId],
@@ -28,12 +30,20 @@ const StageSetupContent = ({ eventId }: { eventId: string }) => {
   });
 
   const mutation = useMutation({
-    mutationFn: (data: {
+    mutationFn: async (data: {
       rows: number;
       seatsPerRow: number;
       price: number;
       stageShape: StageShape;
-    }) => createSeats(eventId, data),
+    }) => {
+      await saveStageShape(eventId, {
+        rows: data.rows,
+        seatsPerRow: data.seatsPerRow,
+        price: data.price,
+        stageShape: data.stageShape,
+      });
+      return createSeats(eventId, data);
+    },
     onSuccess: (data) => {
       toast.success(`Created ${data.count} seats!`);
       seatsQuery.refetch();
@@ -43,35 +53,57 @@ const StageSetupContent = ({ eventId }: { eventId: string }) => {
     },
   });
 
-  const saveShapeMutation = useMutation({
-    mutationFn: (shape: StageShape) => saveStageShape(eventId, shape),
-    onSuccess: () => {
-      toast.success("Stage shape saved!");
-      seatsQuery.refetch();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
-  });
+  useEffect(() => {
+    if (!maxSeats) return;
+    setRows((r) => Math.min(r, Math.min(26, maxSeats)));
+    setSeatsPerRow((s) => Math.min(s, Math.min(50, maxSeats)));
+  }, [maxSeats]);
+
+  const maxRowsAllowed = maxSeats
+    ? Math.min(26, Math.floor(maxSeats / Math.max(seatsPerRow, 1)))
+    : 26;
+
+  const maxSeatsPerRowAllowed = maxSeats
+    ? Math.min(50, Math.floor(maxSeats / Math.max(rows, 1)))
+    : 50;
 
   const existingSeats = seatsQuery.data || [];
   const hasSeats = existingSeats.length > 0;
 
-  const savedShape: StageShape =
-    (existingSeats[0]?.stageShape as StageShape) ?? "rectangle";
-
   useEffect(() => {
-    if (existingSeats.length > 0) {
-      setStageShape(savedShape);
-    }
+    fetchEvent(eventId)
+      .then((event) => {
+        if (event.stageShape) setStageShape(event.stageShape);
+      })
+      .finally(() => setEventLoaded(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seatsQuery.isSuccess]);
+  }, [eventId]);
 
-  const shapeIsDirty = hasSeats && stageShape !== savedShape;
+  if (!eventLoaded) return null;
+
+  const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = Math.min(Math.max(1, Number(e.target.value)), maxRowsAllowed);
+    setRows(val);
+    if (maxSeats) {
+      const newMax = Math.min(50, Math.floor(maxSeats / val));
+      setSeatsPerRow((s) => Math.min(s, newMax));
+    }
+  };
+
+  const handleSeatsPerRowChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = Math.min(
+      Math.max(1, Number(e.target.value)),
+      maxSeatsPerRowAllowed,
+    );
+    setSeatsPerRow(val);
+    if (maxSeats) {
+      const newMax = Math.min(26, Math.floor(maxSeats / val));
+      setRows((r) => Math.min(r, newMax));
+    }
+  };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <Link
           href="/dashboard/org/events"
@@ -120,9 +152,9 @@ const StageSetupContent = ({ eventId }: { eventId: string }) => {
             <input
               type="number"
               min="1"
-              max="26"
+              max={maxRowsAllowed}
               value={rows}
-              onChange={(e) => setRows(Number(e.target.value))}
+              onChange={handleRowsChange}
               className="flex h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
             <p className="text-xs text-gray-400">
@@ -138,9 +170,9 @@ const StageSetupContent = ({ eventId }: { eventId: string }) => {
             <input
               type="number"
               min="1"
-              max="50"
+              max={maxSeatsPerRowAllowed}
               value={seatsPerRow}
-              onChange={(e) => setSeatsPerRow(Number(e.target.value))}
+              onChange={handleSeatsPerRowChange}
               className="flex h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
           </div>
@@ -195,17 +227,6 @@ const StageSetupContent = ({ eventId }: { eventId: string }) => {
           </button>
         </div>
       </div>
-
-      {hasSeats && (
-        <SeatGridPreview
-          existingSeats={existingSeats}
-          stageShape={savedShape}
-          pendingShape={stageShape}
-          shapeIsDirty={shapeIsDirty}
-          onSaveShape={() => saveShapeMutation.mutate(stageShape)}
-          isSavingShape={saveShapeMutation.isPending}
-        />
-      )}
     </div>
   );
 };

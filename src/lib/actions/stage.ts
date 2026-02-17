@@ -29,16 +29,21 @@ export const createSeats = async (
 
 export const saveStageShape = async (
   eventId: string,
-  stageShape: StageShape,
+  config: {
+    rows: number;
+    seatsPerRow: number;
+    price: number;
+    stageShape: StageShape;
+  },
 ) => {
   const res = await fetch(`/api/event/${eventId}/stage-shape`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ stageShape }),
+    body: JSON.stringify(config),
   });
   if (!res.ok) {
     const error = await res.json();
-    throw new Error(error.error || "Failed to save stage shape");
+    throw new Error(error.error || "Failed to save stage config");
   }
   return res.json();
 };
