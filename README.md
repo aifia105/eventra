@@ -1,6 +1,6 @@
-# LiveSeat – Real-Time Smart Event Booking Platform
+# Eventra – Real-Time Smart Event Booking Platform
 
-LiveSeat is a real-time event booking web application that allows users to visually explore stage layouts, select seats interactively, and reserve them with live availability tracking.
+Eventra is a real-time event booking web application that allows users to visually explore stage layouts, select seats interactively, and reserve them with live availability tracking.
 
 It solves the problem of unclear seat visibility, fake urgency, and chaotic booking experiences by providing a transparent, real-time seat selection system.
 
@@ -15,13 +15,13 @@ Users booking tickets for events (concerts, theaters, shows) often:
 - Experience seat conflicts during booking
 - Lose seats during payment due to lack of temporary locking
 
-LiveSeat solves this by providing a real-time visual seat map with temporary locking and live updates.
+Eventra solves this by providing a real-time visual seat map with temporary locking and live updates.
 
 ---
 
 ##  Project
 
-LiveSeat is a real-time event booking platform with an interactive seat map.  
+Eventra is a real-time event booking platform with an interactive seat map.  
 Users can visually explore the venue layout, select seats, and reserve them with live availability tracking.
 
 ---
