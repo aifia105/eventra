@@ -87,7 +87,6 @@ const StageSetupContent = ({ eventId }: { eventId: string }) => {
         </div>
       </div>
 
-      {/* Setup Form */}
       <div className="rounded-2xl bg-white shadow-sm p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
@@ -105,7 +104,6 @@ const StageSetupContent = ({ eventId }: { eventId: string }) => {
           </div>
         </div>
 
-        {/* Stage Shape Picker */}
         <div className="mb-6">
           <label className="text-sm font-semibold text-gray-900 mb-3 block">
             Stage Shape
@@ -113,7 +111,6 @@ const StageSetupContent = ({ eventId }: { eventId: string }) => {
           <ShapeSelector value={stageShape} onChange={setStageShape} />
         </div>
 
-        {/* Numeric Controls */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-900 flex items-center gap-2">
@@ -164,7 +161,6 @@ const StageSetupContent = ({ eventId }: { eventId: string }) => {
           </div>
         </div>
 
-        {/* Live preview before save */}
         <LiveLayoutPreview
           rows={rows}
           seatsPerRow={seatsPerRow}
@@ -200,7 +196,6 @@ const StageSetupContent = ({ eventId }: { eventId: string }) => {
         </div>
       </div>
 
-      {/* Saved seat preview */}
       {hasSeats && (
         <SeatGridPreview
           existingSeats={existingSeats}

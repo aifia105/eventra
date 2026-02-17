@@ -1,40 +1,174 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# LiveSeat – Real-Time Smart Event Booking Platform
 
-## Getting Started
+LiveSeat is a real-time event booking web application that allows users to visually explore stage layouts, select seats interactively, and reserve them with live availability tracking.
 
-First, run the development server:
+It solves the problem of unclear seat visibility, fake urgency, and chaotic booking experiences by providing a transparent, real-time seat selection system.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#  Ideation And Scope
 
-You can start editing the page by modifying `app/route.ts`. The page auto-updates as you edit the file.
+##  Clear Problem
 
-## Learn More
+Users booking tickets for events (concerts, theaters, shows) often:
+- Cannot clearly see the stage perspective from their seat
+- Experience seat conflicts during booking
+- Lose seats during payment due to lack of temporary locking
 
-To learn more about Next.js, take a look at the following resources:
+LiveSeat solves this by providing a real-time visual seat map with temporary locking and live updates.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+##  Project
 
-## Deploy on Vercel
+LiveSeat is a real-time event booking platform with an interactive seat map.  
+Users can visually explore the venue layout, select seats, and reserve them with live availability tracking.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Main User
 
-## API Routes
+**Event Attendee**
+- Wants to book tickets
+- Wants to see stage visibility before choosing
+- Wants to avoid losing seats during checkout
 
-This directory contains example API routes for the headless API app.
+---
 
-For more details, see [route.js file convention](https://nextjs.org/docs/app/api-reference/file-conventions/route).
+## Core Workflow
+
+1. User browses events
+2. User opens event seat map
+3. User selects available seat
+4. System locks seat for 2 minutes
+5. User confirms reservation
+6. Seat becomes permanently reserved
+
+---
+
+#  Design And Product Thinking
+
+##  Main User Flow
+
+Browse Events  
+→ View Event Details  
+→ Open Interactive Seat Map  
+→ Select Seat  
+→ Seat Locked
+→ Confirm Reservation  
+→ Success Screen  
+
+---
+
+##  Main Screens
+
+1. Event Listing Page
+2. Interactive Seat Map Page
+3. Reservation Confirmation Page
+4. Organizer Event Creation Page 
+
+---
+
+##  User Stories
+
+### 1. Browse Events
+**As a user**, I want to view available events so that I can choose one to attend.  
+**Acceptance Criteria:**
+- Event list displays title, date, location
+- Clicking event opens details page
+
+---
+
+### 2. View Seat Map
+**As a user**, I want to see a visual layout of seats so I can choose where to sit.  
+**Acceptance Criteria:**
+- Seats display in grid/layout format
+- Available seats are clearly distinguishable
+- Reserved seats are marked differently
+
+---
+
+### 3. Select Seat
+**As a user**, I want to click on a seat to reserve it.  
+**Acceptance Criteria:**
+- Clicking an available seat locks it
+- Locked seat changes color
+- Countdown timer appears (2 minutes)
+
+---
+
+### 4. Prevent Double Booking
+**As a user**, I want real-time updates so I don’t select an already taken seat.  
+**Acceptance Criteria:**
+- Seat availability updates instantly
+- If another user reserves a seat, it updates live
+
+---
+
+### 5. Confirm Reservation
+**As a user**, I want to confirm my booking before timeout.  
+**Acceptance Criteria:**
+- Confirmation button finalizes reservation
+- Seat status becomes permanently reserved
+
+---
+
+### 6. Auto Release Seat
+**As a system**, I want to release locked seats after timeout.  
+**Acceptance Criteria:**
+- After 2 minutes without confirmation
+- Seat becomes available again
+
+---
+
+### 7. Organizer Creates Event
+**As an organizer**, I want to create an event and define seat layout.  
+**Acceptance Criteria:**
+- Organizer can define event name, date
+- Organizer selects a seat layout template
+- Event is published
+
+---
+
+##  Basic Data Model
+
+### User
+- id
+- name
+- email
+- role (attendee | organizer)
+
+---
+
+### Event
+- id
+- title
+- availableSeats
+- date
+- location
+- organizerId
+- stage
+- type
+
+---
+
+### Seat
+- id
+- eventId
+- row
+- number
+- price
+- status (available | locked | reserved)
+- lockedBy (userId)
+- lockExpiresAt
+
+---
+
+### Reservation
+- id
+- userId
+- eventId
+- seatId
+- status (pending | confirmed)
+- createdAt
+

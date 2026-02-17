@@ -10,6 +10,7 @@ export interface ISeat extends Document {
     status: SeatStatus;
     lockedBy?: mongoose.Types.ObjectId;
     lockExpiresAt?: Date;
+    stageShape?: string;
 }
 
 const SeatSchema = new Schema<ISeat>(
@@ -25,6 +26,10 @@ const SeatSchema = new Schema<ISeat>(
         },
         lockedBy: { type: Schema.Types.ObjectId, ref: "User" },
         lockExpiresAt: { type: Date },
+        stageShape: {
+            type: String,
+            enum: ["rectangle", "thrust", "semicircle", "diamond", "amphitheater"],
+        },
     },
     { timestamps: true },
 );

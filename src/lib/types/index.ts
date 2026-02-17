@@ -6,7 +6,7 @@ export type StageShape =
   | "amphitheater";
 
 export interface StageSetupPageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 export interface Seat {

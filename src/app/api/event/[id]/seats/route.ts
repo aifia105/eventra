@@ -70,7 +70,7 @@ export async function POST(
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
-        const { rows, seatsPerRow, price } = await req.json();
+        const { rows, seatsPerRow, price, stageShape } = await req.json();
 
         if (!rows || !seatsPerRow || !price) {
             return NextResponse.json(
@@ -86,13 +86,19 @@ export async function POST(
         for (let r = 0; r < rows; r++) {
             const rowLetter = String.fromCharCode(65 + r);
             for (let s = 1; s <= seatsPerRow; s++) {
-                seats.push({
+                const seatData: Record<string, unknown> = {
                     eventId: id,
                     row: rowLetter,
                     number: s,
                     price,
                     status: "available",
-                });
+                };
+
+                if (stageShape) {
+                    seatData.stageShape = stageShape;
+                }
+
+                seats.push(seatData);
             }
         }
 

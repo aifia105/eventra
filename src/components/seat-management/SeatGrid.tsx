@@ -1,7 +1,7 @@
 import { Seat, StageShape } from "@/lib/types";
 import React from "react";
-import StageShapeComponent from "./StageShapeComponent";
 import SeatCell from "./SeatCell";
+import StagePreview from "../stage/StagePreview";
 
 const SeatGrid = ({ seats, shape }: { seats: Seat[]; shape: StageShape }) => {
   const seatsByRow: Record<string, Seat[]> = {};
@@ -13,7 +13,7 @@ const SeatGrid = ({ seats, shape }: { seats: Seat[]; shape: StageShape }) => {
 
   return (
     <div className="overflow-x-auto">
-      <StageShapeComponent shape={shape} />
+      <StagePreview shape={shape} />
       <div className="flex flex-col items-center gap-1.5">
         {sortedRows.map((row) => (
           <div key={row} className="flex items-center gap-2">

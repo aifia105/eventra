@@ -1,16 +1,16 @@
 import { CalendarDays, ChevronDown } from "lucide-react";
 import React, { useState } from "react";
 
-import { Event } from "@/lib/types";
+import type { Event as OrgEvent } from "@/lib/types";
 
 const EventDropdown = ({
   events,
   selected,
   onSelect,
 }: {
-  events: Event[];
-  selected: Event | null;
-  onSelect: (e: Event) => void;
+  events: OrgEvent[];
+  selected: OrgEvent | null;
+  onSelect: (e: OrgEvent) => void;
 }) => {
   const [open, setOpen] = useState(false);
 

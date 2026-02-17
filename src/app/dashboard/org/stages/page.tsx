@@ -13,7 +13,12 @@ import {
   CalendarDays,
   Radio,
 } from "lucide-react";
-import { ActivityItem, Seat, Event, StageShape } from "@/lib/types";
+import type {
+  ActivityItem,
+  Seat,
+  Event as OrgEvent,
+  StageShape,
+} from "@/lib/types";
 import { fetchEvents, fetchSeats } from "@/lib/actions/stage";
 import EventDropdown from "@/components/seat-management/EventDropdown";
 import StatsBar from "@/components/seat-management/StatsBar";
@@ -22,14 +27,14 @@ import Legend from "@/components/seat-management/Legend";
 import SeatGrid from "@/components/seat-management/SeatGrid";
 import ActivityFeed from "@/components/seat-management/ActivityFeed";
 
-const Seats = () => {
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+const Stage = () => {
+  const [selectedEvent, setSelectedEvent] = useState<OrgEvent | null>(null);
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [isLive, setIsLive] = useState(true);
   const prevSeatsRef = useRef<Seat[]>([]);
   const activityIdRef = useRef(0);
 
-  const eventsQuery = useQuery({
+  const eventsQuery = useQuery<OrgEvent[]>({
     queryKey: ["org-events"],
     queryFn: fetchEvents,
   });
@@ -142,9 +147,9 @@ const Seats = () => {
 
       <div className="flex items-center gap-4 flex-wrap">
         <EventDropdown
-          events={eventsQuery.data ?? []}
+          events={(eventsQuery.data ?? []) as OrgEvent[]}
           selected={selectedEvent}
-          onSelect={(e) => {
+          onSelect={(e: OrgEvent) => {
             setSelectedEvent(e);
             setActivities([]);
             prevSeatsRef.current = [];
@@ -237,4 +242,4 @@ const Seats = () => {
   );
 };
 
-export default Seats;
+export default Stage;

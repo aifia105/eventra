@@ -1,4 +1,4 @@
-import { StageShape } from "../types";
+import type { StageShape, Event as OrgEvent } from "@/lib/types";
 
 export const fetchSeats = async (eventId: string) => {
   const res = await fetch(`/api/event/${eventId}/seats`);
@@ -70,7 +70,7 @@ export const getSeatsForRow = (
   }
 };
 
-export const fetchEvents = async (): Promise<Event[]> => {
+export const fetchEvents = async (): Promise<OrgEvent[]> => {
   const res = await fetch("/api/org/events");
   if (!res.ok) throw new Error("Failed to fetch events");
   return res.json();
