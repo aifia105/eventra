@@ -50,15 +50,15 @@ const EventCard = ({ event }: EventCardProps) => {
           </div>
 
           <div className="flex items-center gap-3 text-sm text-gray-600">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50">
-              <MapPin className="h-4 w-4 text-blue-600" />
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-50">
+              <MapPin className="h-4 w-4 text-primary" />
             </div>
             <span className="truncate">{event.location}</span>
           </div>
 
           <div className="flex items-center gap-3 text-sm text-gray-600">
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-50">
-              <Users className="h-4 w-4 text-purple-600" />
+              <Users className="h-4 w-4 text-primary" />
             </div>
             <span>{event.availableSeats} seats</span>
           </div>
