@@ -1,17 +1,11 @@
 import { auth } from "@/lib/config/auth";
 import { redirect } from "next/navigation";
-import { Calendar, Ticket, Heart, Clock } from "lucide-react";
+import { Calendar, Ticket, Search } from "lucide-react";
+import Link from "next/link";
 
 export default async function ClientDashboard() {
   const session = await auth();
   if (!session || session.user.role !== "client") redirect("/dashboard");
-
-  const stats = [
-    { label: "Upcoming Events", value: "3", icon: Calendar, color: "bg-blue-500" },
-    { label: "Tickets Purchased", value: "12", icon: Ticket, color: "bg-purple-500" },
-    { label: "Liked Events", value: "5", icon: Heart, color: "bg-pink-500" },
-    { label: "Hours Spent", value: "24h", icon: Clock, color: "bg-orange-500" },
-  ];
 
   return (
     <div className="space-y-8">
@@ -20,21 +14,31 @@ export default async function ClientDashboard() {
         <p className="text-gray-500 mt-1">Welcome back, {session.user.name}!</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="flex items-center gap-4 rounded-xl border bg-white p-6 shadow-sm transition-all hover:shadow-md"
-          >
-            <div className={`flex h-12 w-12 items-center justify-center rounded-lg text-white ${stat.color}`}>
-              <stat.icon className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">{stat.label}</p>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-            </div>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <Link
+          href="/dashboard/client/events"
+          className="group flex items-center gap-4 rounded-xl border bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-primary/30"
+        >
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 text-white">
+            <Search className="h-6 w-6" />
           </div>
-        ))}
+          <div>
+            <p className="text-sm font-medium text-gray-500">Browse Events</p>
+            <p className="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors">
+              Find & Book Seats
+            </p>
+          </div>
+        </Link>
+
+        <div className="flex items-center gap-4 rounded-xl border bg-white p-6 shadow-sm">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500 text-white">
+            <Ticket className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-500">My Reservations</p>
+            <p className="text-lg font-bold text-gray-900">Coming soon</p>
+          </div>
+        </div>
       </div>
 
       <div className="rounded-xl border bg-white p-6 shadow-sm">
